@@ -11,57 +11,56 @@ const hooks = [
   'RIESCI A\nRISOLVERLO?'
 ];
 
+const categoryMap = {
+  logica: 'Logica',
+  matematica: 'Matematica',
+  attenzione: 'Attenzione',
+  interruttori: 'Interruttori',
+  fiammiferi: 'Fiammiferi',
+  porte: 'Osservazione',
+  bicchieri: 'Bicchieri',
+  detective: 'Detective',
+  sequenze: 'Sequenze',
+  parole: 'Parole'
+};
+
 const hashtags = {
   base: ['#quizlogico', '#enigmi', '#brainchallenge', '#indovinelli', '#tiktokitalia'],
   matematica: ['#quizmatematico', '#logica', '#brainchallenge', '#enigmi', '#tiktokitalia'],
-  attenzione: ['#attenzione', '#quizlogico', '#indovinelli', '#brainchallenge', '#tiktokitalia']
+  attenzione: ['#attenzione', '#quizlogico', '#indovinelli', '#brainchallenge', '#tiktokitalia'],
+  detective: ['#detective', '#mistero', '#quizlogico', '#enigmi', '#tiktokitalia'],
+  sequenze: ['#sequenze', '#quizmatematico', '#brainchallenge', '#enigmi', '#tiktokitalia']
 };
 
 const data = {
-  objects: ['candele', 'monete', 'chiavi', 'biglie', 'libri', 'caramelle', 'palline', 'matite', 'carte', 'bicchieri'],
-  people: ['Luca', 'Marco', 'Giulia', 'Sara', 'Davide', 'Anna', 'Marta', 'Paolo', 'Nico', 'Elena'],
+  objects: ['candele', 'monete', 'chiavi', 'biglie', 'libri', 'caramelle', 'palline', 'matite', 'carte', 'bicchieri', 'bottoni', 'anelli'],
+  people: ['Luca', 'Marco', 'Giulia', 'Sara', 'Davide', 'Anna', 'Marta', 'Paolo', 'Nico', 'Elena', 'Sofia', 'Leo'],
   places: ['cantina', 'soffitta', 'stanza buia', 'casa abbandonata', 'ufficio', 'garage', 'magazzino', 'corridoio'],
-  containers: ['scatole', 'sacchetti', 'cassetti', 'barattoli', 'stanze', 'zaini'],
   animals: ['pecore', 'galline', 'pesci', 'cavalli', 'conigli']
 };
 
 function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+function $(id) { return document.getElementById(id); }
 
-const generators = {
+const proceduralGenerators = {
   attenzione: () => {
     const templates = [
-      () => ({
-        category: 'Attenzione',
-        title: 'Quanti mesi hanno 28 giorni?',
-        text: 'Senza pensarci troppo: quanti mesi dell’anno hanno 28 giorni?',
-        solution: 'Tutti e 12. Ogni mese ha almeno 28 giorni.',
-        hook: 'È un tranello: quasi tutti pensano solo a febbraio.'
-      }),
       () => {
-        const n = rnd(7, 25);
-        const left = rnd(2, n - 1);
+        const n = rnd(7, 35);
+        const left = rnd(2, n - 2);
         return {
-          category: 'Attenzione',
-          title: `Ne restano solo ${left}?`,
+          category: 'Attenzione', difficulty: 'facile', title: `Ne restano solo ${left}?`,
           text: `Hai ${n} ${pick(data.objects)}. Ne perdi tutte tranne ${left}. Quante te ne restano?`,
           solution: `Te ne restano ${left}. La frase dice “tutte tranne ${left}”.`,
           hook: 'La risposta è nascosta nella frase.'
         };
       },
-      () => ({
-        category: 'Attenzione',
-        title: 'Cosa pesa di più?',
-        text: 'Pesa di più un chilo di ferro o un chilo di piume?',
-        solution: 'Pesano uguale: entrambi sono un chilo.',
-        hook: 'Sembra banale, ma l’immagine mentale inganna.'
-      }),
       () => {
         const name = pick(data.people);
         return {
-          category: 'Attenzione',
-          title: 'La gara di corsa',
+          category: 'Attenzione', difficulty: 'medio', title: 'La gara di corsa',
           text: `${name} supera il secondo classificato durante una gara. In che posizione si trova adesso?`,
           solution: 'Si trova al secondo posto. Se superi il secondo, prendi il suo posto.',
           hook: 'La risposta istintiva è “primo”, ma è sbagliata.'
@@ -70,142 +69,119 @@ const generators = {
     ];
     return pick(templates)();
   },
-
   matematica: () => {
     const templates = [
       () => {
-        const machines = pick([3, 4, 5, 6, 10]);
-        const target = machines * pick([10, 20, 25]);
-        const minutes = pick([3, 5, 10]);
+        const machines = pick([3, 4, 5, 6, 8, 10]);
+        const target = machines * pick([8, 10, 15, 20, 25]);
+        const minutes = pick([3, 5, 6, 10, 12]);
         return {
-          category: 'Numeri',
-          title: 'Quanto tempo ci vuole?',
+          category: 'Matematica', difficulty: 'medio', title: 'Quanto tempo ci vuole?',
           text: `Se ${machines} macchine producono ${machines} pezzi in ${minutes} minuti, quanto tempo impiegano ${target} macchine a produrre ${target} pezzi?`,
           solution: `${minutes} minuti. Ogni macchina produce un pezzo in ${minutes} minuti.`,
-          hook: 'Sembra un calcolo, ma è logica pura.'
+          hook: 'Sembra proporzione, ma è logica pura.'
         };
       },
       () => {
-        const son = rnd(2, 12);
-        const diff = pick([20, 24, 30, 36]);
-        const total = son + son + diff;
+        const child = rnd(3, 18);
+        const diff = pick([18, 20, 22, 24, 26, 30, 32, 36]);
+        const total = child + child + diff;
         return {
-          category: 'Matematica',
-          title: 'Età del figlio',
+          category: 'Matematica', difficulty: 'medio', title: 'Età del figlio',
           text: `Un padre e un figlio hanno insieme ${total} anni. Il padre ha ${diff} anni più del figlio. Quanti anni ha il figlio?`,
-          solution: `Il figlio ha ${son} anni. Il padre ne ha ${son + diff}.`,
-          hook: 'Attenzione: non basta dividere il totale a caso.'
+          solution: `Il figlio ha ${child} anni. Il padre ne ha ${child + diff}.`,
+          hook: 'Non dividere il totale a metà: c’è la differenza da rispettare.'
         };
       },
       () => {
-        const price = pick([10, 20, 50, 100]);
-        const discount = pick([10, 20, 25, 50]);
+        const price = pick([20, 30, 40, 50, 60, 80, 100, 120]);
+        const discount = pick([10, 20, 25, 30, 50]);
         const finalPrice = price * (100 - discount) / 100;
         return {
-          category: 'Numeri',
-          title: 'Sconto veloce',
-          text: `Un oggetto costa ${price}€. Viene scontato del ${discount}%. Quanto costa dopo lo sconto?`,
-          solution: `Costa ${finalPrice}€. Il ${discount}% di ${price}€ è ${(price - finalPrice)}€.`,
-          hook: 'Un piccolo calcolo per vedere se sei sveglio.'
+          category: 'Matematica', difficulty: 'facile', title: 'Sconto veloce',
+          text: `Un oggetto costa ${price} euro e viene scontato del ${discount}%. Quanto costa dopo lo sconto?`,
+          solution: `Costa ${finalPrice} euro.`,
+          hook: 'Calcolo rapido, ottimo per far commentare.'
         };
       }
     ];
     return pick(templates)();
   },
-
   logica: () => {
-    const templates = [
-      () => {
-        const obj = pick(data.objects);
-        const n = rnd(10, 30);
-        const remove = rnd(3, n - 3);
-        return {
-          category: 'Logica',
-          title: 'Quanti ne hai presi?',
-          text: `Su un tavolo ci sono ${n} ${obj}. Tu ne prendi ${remove}. Quanti ${obj} hai?`,
-          solution: `Ne hai ${remove}. La domanda chiede quanti ne hai tu, non quanti restano sul tavolo.`,
-          hook: 'Leggi bene fino alla fine.'
-        };
-      },
-      () => {
-        const name = pick(data.people);
-        const place = pick(data.places);
-        return {
-          category: 'Logica',
-          title: 'La luce al buio',
-          text: `${name} entra in una ${place} completamente buia. Ha un solo fiammifero. Davanti a sé trova una candela, una lanterna e una stufa. Cosa accende per primo?`,
-          solution: 'Il fiammifero. Prima di accendere qualsiasi altra cosa deve accendere quello.',
-          hook: 'Il classico tranello che fa cadere tutti.'
-        };
-      },
-      () => ({
-        category: 'Logica',
-        title: 'Il dottore misterioso',
-        text: 'Un ragazzo arriva in ospedale. Il medico dice: “Non posso operarlo, è mio figlio”. Ma il padre del ragazzo non è lì. Come è possibile?',
-        solution: 'Il medico è sua madre.',
-        hook: 'Un enigma semplice che smaschera i pregiudizi.'
-      })
-    ];
-    return pick(templates)();
+    const obj = pick(data.objects);
+    const n = rnd(10, 40);
+    const take = rnd(3, n - 3);
+    return {
+      category: 'Logica', difficulty: 'facile', title: 'Quanti ne hai?',
+      text: `Su un tavolo ci sono ${n} ${obj}. Tu ne prendi ${take}. Quanti ${obj} hai?`,
+      solution: `Ne hai ${take}. La domanda chiede quanti ne hai tu, non quanti restano.`,
+      hook: 'Leggi bene fino alla fine.'
+    };
   },
-
-  interruttori: () => ({
-    category: 'Interruttori',
-    title: 'Quale interruttore accende la lampadina?',
-    text: 'Hai 3 interruttori. In un’altra stanza c’è una sola lampadina. Puoi entrare nella stanza una sola volta. Come fai a capire quale interruttore la accende?',
-    solution: 'Accendi il primo per qualche minuto, poi spegnilo. Accendi il secondo ed entra. Accesa = secondo. Spenta ma calda = primo. Spenta e fredda = terzo.',
-    hook: 'Questo enigma separa chi ragiona da chi tira a caso.'
-  }),
-
   fiammiferi: () => {
     const items = shuffle(['candela', 'lampada a olio', 'camino', 'stufa', 'lanterna']).slice(0, 3);
     return {
-      category: 'Fiammiferi',
-      title: 'Cosa accende per primo?',
+      category: 'Fiammiferi', difficulty: 'facile', title: 'Cosa accende per primo?',
       text: `Un uomo accende un fiammifero. Davanti a lui ci sono ${items[0]}, ${items[1]} e ${items[2]}. Cosa accende per primo?`,
       solution: 'Il fiammifero. È la prima cosa che deve essere accesa.',
       hook: 'Non rispondere di getto: la risposta è prima della lista.'
     };
   },
-
-  porte: () => ({
-    category: 'Osservazione',
-    title: 'La porta misteriosa',
-    text: 'Davanti a te ci sono due porte. Una porta porta alla salvezza, l’altra a una trappola. Due guardiani sanno la verità: uno mente sempre e uno dice sempre la verità. Puoi fare una sola domanda a uno solo di loro. Cosa chiedi?',
-    solution: 'Chiedi: “Quale porta mi indicherebbe l’altro guardiano?” Poi scegli la porta opposta a quella indicata.',
-    hook: 'Un grande classico che mette in crisi tantissime persone.'
-  }),
-
-  bicchieri: () => {
-    const answer = rnd(2, 5);
+  sequenze: () => {
+    const start = rnd(1, 6);
+    const step = rnd(2, 9);
+    const seq = Array.from({length: 5}, (_, i) => start + i * step);
     return {
-      category: 'Bicchieri',
-      title: 'Quale bicchiere si riempie per primo?',
-      text: `L’acqua entra dall’alto nel bicchiere 1. Alcuni tubi sono bloccati con una X rossa. Guardando bene i passaggi, quale bicchiere si riempie per primo?`,
-      solution: `Si riempie il primo bicchiere raggiungibile attraverso un tubo libero. Per questa bozza usa come risposta il numero ${answer} e disegna i blocchi in modo coerente nel poster.`,
-      hook: 'Solo chi osserva i blocchi trova la risposta.'
+      category: 'Sequenze', difficulty: 'facile', title: 'Numero mancante',
+      text: `Completa la sequenza: ${seq.join(', ')}, ?`,
+      solution: `${start + 5 * step}. Si aggiunge sempre ${step}.`,
+      hook: 'Guarda la differenza tra i numeri.'
     };
   }
 };
 
-function chooseType() {
-  const selected = $('typeSelect').value;
-  if (selected !== 'mix') return selected;
-  return pick(Object.keys(generators));
+function normalizeCategory(value) {
+  return categoryMap[value] || value;
+}
+
+function matchesFilters(quiz) {
+  const selectedType = $('typeSelect').value;
+  const selectedDifficulty = $('difficultySelect').value;
+  const wantedCategory = normalizeCategory(selectedType);
+  const categoryOk = selectedType === 'mix' || quiz.category === wantedCategory || (selectedType === 'porte' && quiz.title.toLowerCase().includes('porta'));
+  const difficultyOk = selectedDifficulty === 'mix' || !quiz.difficulty || quiz.difficulty === selectedDifficulty;
+  return categoryOk && difficultyOk;
+}
+
+function getBankCandidates() {
+  const bank = window.QUIZ_BANK || [];
+  return bank.filter(matchesFilters);
+}
+
+function generateProceduralCandidate() {
+  const selectedType = $('typeSelect').value;
+  const keys = Object.keys(proceduralGenerators);
+  const key = selectedType !== 'mix' && proceduralGenerators[selectedType] ? selectedType : pick(keys);
+  return proceduralGenerators[key]();
+}
+
+function quizKey(quiz) {
+  return `${quiz.category}|${quiz.title}|${quiz.text}`;
 }
 
 function uniqueQuiz() {
-  let quiz;
-  for (let i = 0; i < 25; i++) {
-    quiz = generators[chooseType()]();
-    const key = `${quiz.category}|${quiz.title}|${quiz.text}`;
-    if (!state.recent.includes(key)) {
-      state.recent.push(key);
-      state.recent = state.recent.slice(-80);
-      localStorage.setItem('recentQuizKeys', JSON.stringify(state.recent));
-      return quiz;
-    }
-  }
+  const bankCandidates = shuffle(getBankCandidates());
+  const combined = [...bankCandidates];
+
+  for (let i = 0; i < 25; i++) combined.push(generateProceduralCandidate());
+
+  const fresh = combined.find(q => !state.recent.includes(quizKey(q)) && matchesFilters(q));
+  const quiz = fresh || combined.find(matchesFilters) || generateProceduralCandidate();
+
+  const key = quizKey(quiz);
+  state.recent.push(key);
+  state.recent = state.recent.slice(-250);
+  localStorage.setItem('recentQuizKeys', JSON.stringify(state.recent));
   return quiz;
 }
 
@@ -218,12 +194,15 @@ function buildImagePrompt(quiz, hook) {
   return `Poster verticale 9:16 per TikTok, stile quiz virale italiano, sfondo nero drammatico, testo grande bianco e giallo, accenti rossi, atmosfera misteriosa, layout pulito e leggibile. Titolo: "${hook.replace('\n', ' ')}". Categoria: "${quiz.category}". Domanda principale: "${quiz.title}". Testo: "${quiz.text}". In basso inserire call to action: "COMMENTA LA TUA RISPOSTA".`;
 }
 
-function $(id) { return document.getElementById(id); }
+function renderHook(hook) {
+  const parts = hook.split('\n');
+  $('posterHook').innerHTML = parts.length > 1 ? `${parts[0]}<br><span>${parts.slice(1).join(' ')}</span>` : hook;
+}
 
 function generateQuiz() {
   const quiz = uniqueQuiz();
   const hook = pick(hooks);
-  $('posterHook').innerHTML = hook.replace('\n', '<br><span>') + (hook.includes('\n') ? '</span>' : '');
+  renderHook(hook);
   $('quizCategory').textContent = quiz.category;
   $('quizTitle').textContent = quiz.title;
   $('quizText').textContent = quiz.text;
@@ -231,7 +210,8 @@ function generateQuiz() {
   $('description').value = buildDescription(quiz);
   $('imagePrompt').value = buildImagePrompt(quiz, hook);
   state.generated++;
-  $('counter').textContent = `Quiz generati in questa sessione: ${state.generated}`;
+  const total = (window.QUIZ_BANK || []).length;
+  $('counter').textContent = `Quiz generati in questa sessione: ${state.generated} | Archivio: ${total} quiz + varianti automatiche | Anti-ripetizione: ultimi ${state.recent.length}`;
 }
 
 async function copyFrom(id, buttonId, label) {
@@ -246,8 +226,15 @@ async function copyFrom(id, buttonId, label) {
   }
 }
 
+function resetRecent() {
+  state.recent = [];
+  localStorage.removeItem('recentQuizKeys');
+  $('counter').textContent = `Anti-ripetizione resettato. Quiz generati in questa sessione: ${state.generated}`;
+}
+
 $('generateBtn').addEventListener('click', generateQuiz);
 $('copyBtn').addEventListener('click', () => copyFrom('description', 'copyBtn', 'Copia descrizione'));
 $('copyPromptBtn').addEventListener('click', () => copyFrom('imagePrompt', 'copyPromptBtn', 'Copia prompt'));
+$('resetBtn').addEventListener('click', resetRecent);
 
 generateQuiz();
