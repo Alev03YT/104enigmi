@@ -45,26 +45,39 @@ h1 {
 
 .subtitle {
   font-family: Arial, sans-serif;
-  max-width: 680px;
+  max-width: 720px;
   margin: 20px auto;
   color: var(--muted);
   font-size: 1.1rem;
 }
 
+.controls,
 .actions {
   display: flex;
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 14px;
 }
 
+select,
 button {
   border: 0;
   border-radius: 999px;
+  font: inherit;
+  padding: 14px 20px;
+}
+
+select {
+  background: #111;
+  color: #fff;
+  border: 1px solid var(--border);
+  min-width: 210px;
+}
+
+button {
   background: var(--yellow);
   color: #111;
-  font: inherit;
-  padding: 14px 24px;
   cursor: pointer;
   text-transform: uppercase;
   box-shadow: 0 8px 24px rgba(255,196,0,.18);
@@ -72,6 +85,12 @@ button {
 
 button.secondary {
   background: #fff;
+}
+
+.counter {
+  font-family: Arial, sans-serif;
+  color: var(--muted);
+  margin-top: 16px;
 }
 
 .grid {
