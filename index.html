@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>104 Enigmi - Generatore Quiz TikTok</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <p class="eyebrow">104 Enigmi</p>
+      <h1>Generatore automatico di quiz logici virali</h1>
+      <p class="subtitle">Crea enigmi stile TikTok con testo, soluzione, descrizione pronta e massimo 5 hashtag.</p>
+      <div class="actions">
+        <button id="generateBtn">Genera quiz</button>
+        <button id="copyBtn" class="secondary">Copia descrizione</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card poster">
+        <div class="posterTop">NON RISPONDERE<br><span>DI GETTO</span></div>
+        <div id="quizCategory" class="tag">Quiz logico</div>
+        <h2 id="quizTitle">Premi “Genera quiz”</h2>
+        <p id="quizText">Qui apparirà un enigma pronto da trasformare in video o immagine per TikTok.</p>
+        <div class="commentBox">COMMENTA LA TUA RISPOSTA</div>
+      </article>
+
+      <article class="card">
+        <h3>Soluzione</h3>
+        <p id="solution">La soluzione apparirà qui.</p>
+      </article>
+
+      <article class="card">
+        <h3>Descrizione TikTok</h3>
+        <textarea id="description" readonly>Genera un quiz per ottenere la descrizione.</textarea>
+      </article>
+
+      <article class="card">
+        <h3>Prompt immagine</h3>
+        <textarea id="imagePrompt" readonly>Genera un quiz per ottenere il prompt grafico.</textarea>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
