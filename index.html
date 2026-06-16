@@ -22,6 +22,9 @@
           <option value="fiammiferi">Fiammiferi</option>
           <option value="porte">Porte e guardiani</option>
           <option value="bicchieri">Bicchieri e tubi</option>
+          <option value="detective">Detective</option>
+          <option value="sequenze">Sequenze</option>
+          <option value="parole">Parole</option>
         </select>
         <select id="difficultySelect">
           <option value="mix">Difficoltà mix</option>
@@ -34,6 +37,7 @@
         <button id="generateBtn">Genera contenuto</button>
         <button id="copyBtn" class="secondary">Copia descrizione</button>
         <button id="copyPromptBtn" class="secondary">Copia prompt</button>
+        <button id="resetBtn" class="ghost">Reset anti-ripetizione</button>
       </div>
       <p id="counter" class="counter">Quiz generati in questa sessione: 0</p>
     </section>
@@ -64,6 +68,7 @@
     </section>
   </main>
 
+  <script src="data/quiz-bank.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
