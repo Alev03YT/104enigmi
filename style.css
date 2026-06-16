@@ -87,6 +87,18 @@ button.secondary {
   background: #fff;
 }
 
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+button:hover,
+select:hover {
+  filter: brightness(1.08);
+}
+
 .counter {
   font-family: Arial, sans-serif;
   color: var(--muted);
