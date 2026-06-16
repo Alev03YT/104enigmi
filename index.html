@@ -11,18 +11,38 @@
     <section class="hero">
       <p class="eyebrow">104 Enigmi</p>
       <h1>Generatore automatico di quiz logici virali</h1>
-      <p class="subtitle">Crea enigmi stile TikTok con testo, soluzione, descrizione pronta e massimo 5 hashtag.</p>
-      <div class="actions">
-        <button id="generateBtn">Genera quiz</button>
-        <button id="copyBtn" class="secondary">Copia descrizione</button>
+      <p class="subtitle">Crea quiz sempre diversi con soluzione, descrizione TikTok, hashtag e prompt copertina 9:16.</p>
+      <div class="controls">
+        <select id="typeSelect">
+          <option value="mix">Mix automatico</option>
+          <option value="logica">Logica</option>
+          <option value="matematica">Matematica</option>
+          <option value="attenzione">Attenzione</option>
+          <option value="interruttori">Interruttori</option>
+          <option value="fiammiferi">Fiammiferi</option>
+          <option value="porte">Porte e guardiani</option>
+          <option value="bicchieri">Bicchieri e tubi</option>
+        </select>
+        <select id="difficultySelect">
+          <option value="mix">Difficoltà mix</option>
+          <option value="facile">Facile</option>
+          <option value="medio">Medio</option>
+          <option value="difficile">Difficile</option>
+        </select>
       </div>
+      <div class="actions">
+        <button id="generateBtn">Genera contenuto</button>
+        <button id="copyBtn" class="secondary">Copia descrizione</button>
+        <button id="copyPromptBtn" class="secondary">Copia prompt</button>
+      </div>
+      <p id="counter" class="counter">Quiz generati in questa sessione: 0</p>
     </section>
 
     <section class="grid">
       <article class="card poster">
-        <div class="posterTop">NON RISPONDERE<br><span>DI GETTO</span></div>
+        <div class="posterTop" id="posterHook">NON RISPONDERE<br><span>DI GETTO</span></div>
         <div id="quizCategory" class="tag">Quiz logico</div>
-        <h2 id="quizTitle">Premi “Genera quiz”</h2>
+        <h2 id="quizTitle">Premi “Genera contenuto”</h2>
         <p id="quizText">Qui apparirà un enigma pronto da trasformare in video o immagine per TikTok.</p>
         <div class="commentBox">COMMENTA LA TUA RISPOSTA</div>
       </article>
@@ -38,7 +58,7 @@
       </article>
 
       <article class="card">
-        <h3>Prompt immagine</h3>
+        <h3>Prompt copertina</h3>
         <textarea id="imagePrompt" readonly>Genera un quiz per ottenere il prompt grafico.</textarea>
       </article>
     </section>
