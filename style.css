@@ -9,6 +9,17 @@
   --border: rgba(255,255,255,.12);
 }
 
+body.light-theme {
+  color-scheme: light;
+  --bg: #f4f4f4;
+  --card: #ffffff;
+  --text: #111;
+  --muted: #555;
+  --yellow: #d99900;
+  --red: #b30000;
+  --border: rgba(0,0,0,.12);
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -17,6 +28,10 @@ body {
   background: radial-gradient(circle at top, #1a1a1a, var(--bg) 55%);
   color: var(--text);
   min-height: 100vh;
+}
+
+body.light-theme {
+  background: radial-gradient(circle at top, #ffffff, var(--bg) 60%);
 }
 
 .app {
@@ -45,7 +60,7 @@ h1 {
 
 .subtitle {
   font-family: Arial, sans-serif;
-  max-width: 780px;
+  max-width: 820px;
   margin: 20px auto;
   color: var(--muted);
   font-size: 1.1rem;
@@ -64,6 +79,10 @@ h1 {
   border-radius: 18px;
   background: rgba(255,255,255,.04);
   padding: 14px;
+}
+
+body.light-theme .stats div {
+  background: rgba(0,0,0,.04);
 }
 
 .stats strong {
@@ -99,8 +118,8 @@ button {
 }
 
 select {
-  background: #111;
-  color: #fff;
+  background: var(--card);
+  color: var(--text);
   border: 1px solid var(--border);
   min-width: 210px;
 }
@@ -115,6 +134,11 @@ button {
 
 button.secondary {
   background: #fff;
+}
+
+body.light-theme button.secondary {
+  background: #111;
+  color: #fff;
 }
 
 button.ghost {
@@ -132,15 +156,26 @@ button.mini {
   box-shadow: none;
 }
 
+body.light-theme button.mini {
+  background: #111;
+  color: #fff;
+}
+
 button:hover,
 select:hover {
   filter: brightness(1.08);
 }
 
-.counter {
+.counter,
+.hint {
   font-family: Arial, sans-serif;
   color: var(--muted);
   margin-top: 16px;
+}
+
+.hint {
+  margin-top: 0;
+  line-height: 1.5;
 }
 
 .grid {
@@ -157,8 +192,17 @@ select:hover {
   box-shadow: 0 18px 60px rgba(0,0,0,.35);
 }
 
+body.light-theme .card {
+  background: linear-gradient(180deg, rgba(0,0,0,.03), rgba(0,0,0,.01));
+  box-shadow: 0 18px 60px rgba(0,0,0,.12);
+}
+
 .card.wide {
   grid-column: span 2;
+}
+
+.phase-d-panel {
+  border-color: rgba(255,196,0,.35);
 }
 
 .poster {
@@ -203,7 +247,8 @@ select:hover {
 }
 
 #quizText,
-#solution {
+#solution,
+#videoPlan {
   font-family: Arial, sans-serif;
   font-size: 1.12rem;
   line-height: 1.55;
@@ -239,8 +284,20 @@ textarea {
   line-height: 1.5;
 }
 
-#batchOutput {
+body.light-theme textarea {
+  background: #fff;
+  color: #111;
+}
+
+#batchOutput,
+#calendarOutput,
+#favoritesOutput {
   min-height: 360px;
+}
+
+#aiBrief,
+#customQuizInput {
+  min-height: 220px;
 }
 
 @media (max-width: 1040px) {
