@@ -11,7 +11,7 @@
     <section class="hero">
       <p class="eyebrow">104 Enigmi</p>
       <h1>Generatore automatico di quiz logici virali</h1>
-      <p class="subtitle">Fase B avviata: archivio ampliato, meno ripetizioni, più varianti per categorie e contenuti TikTok completi.</p>
+      <p class="subtitle">Fase C avviata: preferiti, esportazione CSV, piano editoriale settimanale e calendario contenuti.</p>
 
       <div class="stats" id="statsPanel">
         <div><strong id="statTotal">0</strong><span>Quiz archivio</span></div>
@@ -46,6 +46,9 @@
         <button id="generateBtn">Genera video</button>
         <button id="copyAllBtn" class="secondary">Copia tutto</button>
         <button id="batchBtn" class="secondary">Genera 30 idee</button>
+        <button id="favoriteBtn" class="secondary">Salva preferito</button>
+        <button id="weekPlanBtn" class="secondary">Piano 7 giorni</button>
+        <button id="exportCsvBtn" class="secondary">Esporta CSV</button>
         <button id="resetBtn" class="ghost">Reset anti-ripetizione</button>
       </div>
       <p id="counter" class="counter">Quiz generati in questa sessione: 0</p>
@@ -98,11 +101,23 @@
         <h3>30 idee pronte</h3>
         <textarea id="batchOutput" readonly>Premi “Genera 30 idee” per creare un piano contenuti rapido.</textarea>
       </article>
+
+      <article class="card wide">
+        <h3>Calendario editoriale</h3>
+        <textarea id="calendarOutput" readonly>Premi “Piano 7 giorni” per creare una settimana di pubblicazioni.</textarea>
+      </article>
+
+      <article class="card wide">
+        <h3>Preferiti</h3>
+        <textarea id="favoritesOutput" readonly>I quiz salvati come preferiti appariranno qui.</textarea>
+        <button id="clearFavoritesBtn" class="mini">Svuota preferiti</button>
+      </article>
     </section>
   </main>
 
   <script src="data/quiz-bank.js"></script>
   <script src="data/phase-b-bank.js"></script>
   <script src="script.js"></script>
+  <script src="phase-c.js"></script>
 </body>
 </html>
