@@ -11,7 +11,7 @@
     <section class="hero">
       <p class="eyebrow">104 Enigmi</p>
       <h1>Generatore automatico di quiz logici virali</h1>
-      <p class="subtitle">Fase C avviata: preferiti, esportazione CSV, piano editoriale settimanale e calendario contenuti.</p>
+      <p class="subtitle">Fase D avviata: modalità IA, tema, quiz del giorno, import quiz personalizzati e strumenti creator avanzati.</p>
 
       <div class="stats" id="statsPanel">
         <div><strong id="statTotal">0</strong><span>Quiz archivio</span></div>
@@ -49,6 +49,8 @@
         <button id="favoriteBtn" class="secondary">Salva preferito</button>
         <button id="weekPlanBtn" class="secondary">Piano 7 giorni</button>
         <button id="exportCsvBtn" class="secondary">Esporta CSV</button>
+        <button id="dailyQuizBtn" class="secondary">Quiz del giorno</button>
+        <button id="themeBtn" class="ghost">Cambia tema</button>
         <button id="resetBtn" class="ghost">Reset anti-ripetizione</button>
       </div>
       <p id="counter" class="counter">Quiz generati in questa sessione: 0</p>
@@ -97,6 +99,21 @@
         <button id="copyPromptBtn" class="mini">Copia prompt</button>
       </article>
 
+      <article class="card wide phase-d-panel">
+        <h3>Modalità IA</h3>
+        <p class="hint">Per sicurezza GitHub Pages non deve contenere la tua API key nel codice pubblico. Usa questa sezione per generare un prompt perfetto da copiare in ChatGPT o in futuro collegare un backend privato.</p>
+        <textarea id="aiBrief">Crea un enigma logico originale in italiano per TikTok. Deve avere: titolo breve, domanda, soluzione, spiegazione, descrizione TikTok, massimo 5 hashtag, prompt copertina verticale 9:16. Stile: virale, semplice, commentabile.</textarea>
+        <button id="aiPromptBtn" class="mini">Crea prompt IA</button>
+        <button id="copyAiPromptBtn" class="mini">Copia prompt IA</button>
+      </article>
+
+      <article class="card wide phase-d-panel">
+        <h3>Import quiz personalizzati</h3>
+        <p class="hint">Formato: Titolo | Categoria | Domanda | Soluzione. Un quiz per riga.</p>
+        <textarea id="customQuizInput">Esempio quiz | Logica | Hai 3 porte e una sola è sicura. Quale domanda fai? | Chiedi quale porta indicherebbe l'altro e scegli l'opposta.</textarea>
+        <button id="importQuizBtn" class="mini">Importa quiz</button>
+      </article>
+
       <article class="card wide">
         <h3>30 idee pronte</h3>
         <textarea id="batchOutput" readonly>Premi “Genera 30 idee” per creare un piano contenuti rapido.</textarea>
@@ -119,5 +136,6 @@
   <script src="data/phase-b-bank.js"></script>
   <script src="script.js"></script>
   <script src="phase-c.js"></script>
+  <script src="phase-d.js"></script>
 </body>
 </html>
