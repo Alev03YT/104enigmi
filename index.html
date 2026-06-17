@@ -11,7 +11,15 @@
     <section class="hero">
       <p class="eyebrow">104 Enigmi</p>
       <h1>Generatore automatico di quiz logici virali</h1>
-      <p class="subtitle">Crea quiz sempre diversi con soluzione, descrizione TikTok, hashtag e prompt copertina 9:16.</p>
+      <p class="subtitle">Crea quiz sempre diversi con soluzione, descrizione TikTok, commento fissato, hashtag e prompt copertina 9:16.</p>
+
+      <div class="stats" id="statsPanel">
+        <div><strong id="statTotal">0</strong><span>Quiz archivio</span></div>
+        <div><strong id="statVariants">0</strong><span>Varianti stimate</span></div>
+        <div><strong id="statRecent">0</strong><span>Anti-ripetizione</span></div>
+        <div><strong id="statViral">0</strong><span>Viralità</span></div>
+      </div>
+
       <div class="controls">
         <select id="typeSelect">
           <option value="mix">Mix automatico</option>
@@ -33,10 +41,11 @@
           <option value="difficile">Difficile</option>
         </select>
       </div>
+
       <div class="actions">
-        <button id="generateBtn">Genera contenuto</button>
-        <button id="copyBtn" class="secondary">Copia descrizione</button>
-        <button id="copyPromptBtn" class="secondary">Copia prompt</button>
+        <button id="generateBtn">Genera video</button>
+        <button id="copyAllBtn" class="secondary">Copia tutto</button>
+        <button id="batchBtn" class="secondary">Genera 30 idee</button>
         <button id="resetBtn" class="ghost">Reset anti-ripetizione</button>
       </div>
       <p id="counter" class="counter">Quiz generati in questa sessione: 0</p>
@@ -46,7 +55,7 @@
       <article class="card poster">
         <div class="posterTop" id="posterHook">NON RISPONDERE<br><span>DI GETTO</span></div>
         <div id="quizCategory" class="tag">Quiz logico</div>
-        <h2 id="quizTitle">Premi “Genera contenuto”</h2>
+        <h2 id="quizTitle">Premi “Genera video”</h2>
         <p id="quizText">Qui apparirà un enigma pronto da trasformare in video o immagine per TikTok.</p>
         <div class="commentBox">COMMENTA LA TUA RISPOSTA</div>
       </article>
@@ -59,11 +68,24 @@
       <article class="card">
         <h3>Descrizione TikTok</h3>
         <textarea id="description" readonly>Genera un quiz per ottenere la descrizione.</textarea>
+        <button id="copyBtn" class="mini">Copia descrizione</button>
       </article>
 
       <article class="card">
+        <h3>Commento fissato</h3>
+        <textarea id="pinnedComment" readonly>Genera un quiz per ottenere il commento con soluzione.</textarea>
+        <button id="copyCommentBtn" class="mini">Copia commento</button>
+      </article>
+
+      <article class="card wide">
         <h3>Prompt copertina</h3>
         <textarea id="imagePrompt" readonly>Genera un quiz per ottenere il prompt grafico.</textarea>
+        <button id="copyPromptBtn" class="mini">Copia prompt</button>
+      </article>
+
+      <article class="card wide">
+        <h3>30 idee pronte</h3>
+        <textarea id="batchOutput" readonly>Premi “Genera 30 idee” per creare un piano contenuti rapido.</textarea>
       </article>
     </section>
   </main>
