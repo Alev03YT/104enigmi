@@ -214,7 +214,10 @@ function buildAllText() {
   if (!quiz) return '';
   return `QUIZ:\n${quiz.title}\n${quiz.text}\n\nSOLUZIONE:\n${quiz.solution}\n\nPIANO VIDEO:\n${$('videoPlan').textContent}\n\nVOICE-OVER:\n${$('voiceover').value}\n\nDESCRIZIONE TIKTOK:\n${$('description').value}\n\nCOMMENTO FISSATO:\n${$('pinnedComment').value}\n\nPROMPT COPERTINA:\n${$('imagePrompt').value}`;
 }
-function generateBatch() {
+async function generateBatch() {
+  const button=$('batchBtn');
+  button.disabled=true;
+  button.textContent='Genero 0/30...';
   const rows = [];
   const previousGenerated = state.generated;
   for (let i = 1; i <= 30; i++) {
@@ -222,7 +225,11 @@ function generateBatch() {
     if (!quiz) { rows.push('Archivio esaurito per questa combinazione: scegli un’altra categoria o difficoltà.'); break; }
     const hook = pick(hooks), score = viralScore(quiz);
     rows.push(`${i}. [${quiz.category} | ${quiz.difficulty || 'mix'} | viralità ${score}/100]\nTITOLO: ${quiz.title}\nQUIZ: ${quiz.text}\nSOLUZIONE: ${quiz.solution}\nPIANO VIDEO: ${buildVideoPlan(quiz, score)}\nVOICE-OVER: ${buildVoiceover(quiz)}\nDESCRIZIONE: ${buildDescription(quiz)}\nCOMMENTO: ${buildPinnedComment(quiz)}\nPROMPT: ${buildImagePrompt(quiz, hook)}\n`);
+    button.textContent=`Genero ${i}/30...`;
+    await new Promise(resolve=>setTimeout(resolve,0));
   }
+  button.disabled=false;
+  button.textContent='Genera 30 idee';
   state.generated = previousGenerated + rows.filter(row => row.includes('TITOLO: ')).length;
   $('batchOutput').value = rows.join('\n-----------------------------\n');
   updateStats();
