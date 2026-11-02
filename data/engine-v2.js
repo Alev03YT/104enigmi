@@ -115,18 +115,18 @@
     return null;
   }
   function matches(d){
-    if(d==='facile'||d==='medio'){const k=d==='facile'?rand(2,5):rand(6,12);
+    if(d==='facile'||d==='medio'){const k=d==='facile'?rand(2,25):rand(10,60);
       return base('Fiammiferi',d,'quadrati-fila','Quanti fiammiferi?',`Costruisci ${k} quadrati in fila, ciascuno con un lato condiviso col quadrato accanto. Ogni lato è un fiammifero. Quanti fiammiferi servono in tutto?`,
        `${3*k+1}. Il primo quadrato richiede 4, ognuno dei ${k-1} successivi aggiunge 3.`);
     }
-    const rows=d==='difficile'?rand(2,4):rand(4,7),cols=d==='difficile'?rand(3,6):rand(5,8);
+    const rows=d==='difficile'?rand(2,12):rand(7,24),cols=d==='difficile'?rand(3,14):rand(7,24);
     const count=2*rows*cols+rows+cols;
     return base('Fiammiferi',d,'griglia','La griglia di fiammiferi',`Realizzi una griglia rettangolare con ${rows} righe e ${cols} colonne di quadratini. Ogni lato usa un fiammifero e i lati condivisi si contano una volta. Quanti fiammiferi servono?`,
       `${count}. Lati verticali: ${rows}×${cols+1}=${rows*(cols+1)}; orizzontali: ${cols}×${rows+1}=${cols*(rows+1)}.`);
   }
   function cups(d){
-    const n=d==='facile'?rand(6,12):d==='medio'?rand(9,15):d==='difficile'?rand(13,20):rand(19,27);
-    const steps=d==='facile'?[2]:d==='medio'?[2,3]:d==='difficile'?[2,3,4]:[2,3,4,5];
+    const n=d==='facile'?rand(6,36):d==='medio'?rand(12,50):d==='difficile'?rand(22,70):rand(30,90);
+    const steps=d==='facile'?[rand(2,4)]:d==='medio'?mix([2,3,4,5]).slice(0,2):d==='difficile'?mix([2,3,4,5,6]).slice(0,3):mix([2,3,4,5,6,7,8]).slice(0,4);
     const flips=Array(n).fill(0);
     for(const k of steps)for(let i=k;i<=n;i+=k)flips[i-1]^=1;
     const up=flips.filter(x=>!x).length;
