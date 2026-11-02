@@ -156,20 +156,43 @@ function viralScore(quiz) {
   return Math.max(1, Math.min(99, score));
 }
 function recommendedDuration(quiz) {
-  const base = quiz.text.length < 120 ? 10 : quiz.text.length < 210 ? 14 : 18;
-  return quiz.difficulty === 'difficile' ? base + 6 : base;
+  const clueCount = quiz.category === 'Trova il codice' ? (quiz.text.match(/→/g) || []).length : 0;
+  if (clueCount) return Math.max(20, 14 + clueCount * 3);
+  const base = quiz.text.length < 120 ? 12 : quiz.text.length < 210 ? 16 : 22;
+  return base + (quiz.difficulty === 'esperto' ? 6 : quiz.difficulty === 'difficile' ? 3 : 0);
 }
 function buildVideoPlan(quiz, score) {
   const seconds = recommendedDuration(quiz);
-  return `Durata consigliata: ${seconds}-${seconds + 4}s\nStruttura: 1) hook iniziale 2s, 2) domanda 6-10s, 3) pausa per commenti, 4) soluzione nel commento fissato.\nViralità stimata: ${score}/100`;
+  const n = (quiz.text.match(/→/g) || []).length;
+  const detail = n ? `Mostra tutti i ${n} indizi sullo schermo; NON leggerli uno per uno nell'audio. Lascia tempo per fermare e riguardare il video.` : 'Mostra chiaramente la domanda e lascia qualche secondo per ragionare.';
+  return `Durata indicativa: ${seconds}-${seconds + 6}s (da adattare ai dati reali)\nStruttura: apertura con sfida → enigma leggibile → invito a commentare.\n${detail}\nPunteggio interno di coinvolgimento: ${score}/100 (euristica, NON previsione delle visualizzazioni).`;
 }
 function buildDescription(quiz) {
-  const tagSet = hashtags[quiz.category.toLowerCase()] || hashtags.base;
-  return `🧠 ${quiz.title}\n\n${quiz.hook}\n\n${quiz.text}\n\nScrivi la tua risposta nei commenti 👇\n\n${tagSet.slice(0, 5).join(' ')}`;
+  const tagSet = quiz.category === 'Trova il codice'
+    ? ['#quiz', '#trovailcodice', '#logica', '#rompicapo', '#brainchallenge']
+    : (hashtags[quiz.category.toLowerCase()] || hashtags.base);
+  if (quiz.category === 'Trova il codice') {
+    const n = quiz.title.match(/\d+/)?.[0] || '?';
+    const indizi = (quiz.text.match(/→/g) || []).length;
+    const intro = quiz.difficulty === 'esperto'
+      ? 'Nei quiz precedenti avete trovato il codice… stavolta ho alzato davvero il livello.'
+      : 'Riesci a risolvere questo codice senza leggere i commenti?';
+    return `🧠 ${intro}\n\n🔐 ${n} cifre, ${indizi} indizi e una sola soluzione. Osserva bene l'immagine e ragiona fino alla fine.\n\n👇 Scrivi solo il codice che hai trovato e spiega come ci sei arrivato!\n\n${tagSet.slice(0,5).join(' ')}`;
+  }
+  return `🧠 ${quiz.title}\n\n${quiz.hook || 'Osserva bene e ragiona.'}\n\n${quiz.text}\n\n👇 Scrivi la tua risposta e spiega il ragionamento!\n\n${tagSet.slice(0,5).join(' ')}`;
 }
-function buildPinnedComment(quiz) { return `✅ SOLUZIONE:\n${quiz.solution}\n\nCi eri arrivato? 👇`; }
+function buildPinnedComment(quiz) {
+  if (quiz.category === 'Trova il codice')
+    return '🔐 Prima di leggere gli altri commenti, scrivi il tuo codice e il ragionamento. Chi riesce a dimostrare la soluzione senza spoiler? 👇';
+  return '🧠 Tu che risposta hai trovato? Spiega il ragionamento senza copiare dagli altri! 👇';
+}
 function buildVoiceover(quiz) {
-  return `Aspetta, non rispondere di getto.\n${quiz.text}\nHai pochi secondi per pensarci.\nScrivi la risposta nei commenti prima di guardare la soluzione.`;
+  if (quiz.category === 'Trova il codice') {
+    const digits = quiz.title.match(/\d+/)?.[0] || 'alcune';
+    const clues = (quiz.text.match(/→/g) || []).length;
+    return `Nei video precedenti molti di voi hanno trovato il codice. Questa volta ho alzato la difficoltà: ${digits} cifre e ${clues} indizi da incrociare. Non leggere i commenti. Riesci a trovare l'unica soluzione? Scrivila qui sotto!`;
+  }
+  return `Fermati un momento. ${quiz.title}. ${quiz.text} Non guardare i commenti: ragiona e scrivi la tua risposta!`;
 }
 function buildImagePrompt(quiz, hook) {
   return `Poster verticale 9:16 per TikTok, stile quiz virale italiano, sfondo nero drammatico, testo grande bianco e giallo, accenti rossi, atmosfera misteriosa, layout pulito e leggibile. Titolo: "${hook.replace('\n', ' ')}". Categoria: "${quiz.category}". Domanda principale: "${quiz.title}". Testo: "${quiz.text}". In basso inserire call to action: "COMMENTA LA TUA RISPOSTA".`;
@@ -196,7 +219,7 @@ function generateQuiz() {
   state.currentQuiz = quiz;
   state.currentHook = hook;
   renderHook(hook);
-  $('quizCategory').textContent = `${quiz.category} • ${quiz.difficulty || 'mix'} • viralità ${score}/100`;
+  $('quizCategory').textContent = `${quiz.category} • ${quiz.difficulty || 'mix'} • coinvolgimento stimato ${score}/100`;
   $('quizTitle').textContent = quiz.title;
   $('quizText').textContent = quiz.text;
   $('solution').textContent = quiz.solution;
