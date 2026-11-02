@@ -92,7 +92,69 @@
     }
     return null;
   }
-  const methods={matematica:math,sequenze:sequence,logica:logic,attenzione:attention,codici:code};
+  const extra=(function extraCategories(){
+  const chooseName = n => mix(people).slice(0,n);
+  function testimony(kind,d){
+    const n=d==='facile'?3:d==='medio'?3:4;
+    const target=d==='facile'?1:d==='medio'?2:d==='difficile'?2:3;
+    const labels=kind==='porte'?['A','B','C','D'].slice(0,n):chooseName(n);
+    for(let tries=0;tries<200;tries++){
+      const claims=Array.from({length:n},()=>({index:rand(0,n-1),negative:rand(0,1)===1}));
+      const truth=(claim,culprit)=>(claim.index===culprit)!==claim.negative;
+      const valid=labels.map((_,i)=>i).filter(i=>claims.filter(c=>truth(c,i)).length===target);
+      if(valid.length!==1)continue;
+      const answer=valid[0];
+      const phrases=claims.map((c,i)=>`${kind==='porte'?'Cartello sulla porta':'Testimonianza di'} ${labels[i]}: «${kind==='porte'?"L’uscita è":'Il colpevole è'} ${c.negative?'NON ':''}${kind==='porte'?'dietro la porta ':''}${labels[c.index]}»`);
+      const t=`${kind==='porte'?'Una sola porta conduce all’uscita':'Una sola persona è colpevole'}. ${target} delle ${n} frasi seguenti ${target===1?'è vera':'sono vere'}. ${phrases.join('; ')}. ${kind==='porte'?'Quale porta conduce all’uscita?':'Chi è il colpevole?'}`;
+      const trueOnes=claims.map((c,i)=>truth(c,answer)?labels[i]:null).filter(Boolean);
+      return base(kind==='porte'?'Osservazione':'Detective',d,kind+'-'+n,
+        kind==='porte'?'La porta giusta':'Chi sta mentendo?',t,
+        `${labels[answer]}. Se è la risposta, le affermazioni vere sono quelle di ${trueOnes.join(', ')} (${target} in totale).`,
+        'Non indovinare: prova ogni possibilità e conta le frasi vere.');
+    }
+    return null;
+  }
+  function matches(d){
+    if(d==='facile'||d==='medio'){const k=d==='facile'?rand(2,5):rand(6,12);
+      return base('Fiammiferi',d,'quadrati-fila','Quanti fiammiferi?',`Costruisci ${k} quadrati in fila, ciascuno con un lato condiviso col quadrato accanto. Ogni lato è un fiammifero. Quanti fiammiferi servono in tutto?`,
+       `${3*k+1}. Il primo quadrato richiede 4, ognuno dei ${k-1} successivi aggiunge 3.`);
+    }
+    const rows=d==='difficile'?rand(2,4):rand(4,7),cols=d==='difficile'?rand(3,6):rand(5,8);
+    const count=2*rows*cols+rows+cols;
+    return base('Fiammiferi',d,'griglia','La griglia di fiammiferi',`Realizzi una griglia rettangolare con ${rows} righe e ${cols} colonne di quadratini. Ogni lato usa un fiammifero e i lati condivisi si contano una volta. Quanti fiammiferi servono?`,
+      `${count}. Lati verticali: ${rows}×${cols+1}=${rows*(cols+1)}; orizzontali: ${cols}×${rows+1}=${cols*(rows+1)}.`);
+  }
+  function cups(d){
+    const n=d==='facile'?rand(6,12):d==='medio'?rand(9,15):d==='difficile'?rand(13,20):rand(19,27);
+    const steps=d==='facile'?[2]:d==='medio'?[2,3]:d==='difficile'?[2,3,4]:[2,3,4,5];
+    const flips=Array(n).fill(0);
+    for(const k of steps)for(let i=k;i<=n;i+=k)flips[i-1]^=1;
+    const up=flips.filter(x=>!x).length;
+    return base('Bicchieri',d,`giri-${steps.join('-')}`,'I bicchieri capovolti',
+      `Hai ${n} bicchieri in fila, tutti inizialmente rivolti verso l’alto. Capovolgi una volta quelli nelle posizioni multiple di ${steps.join(', poi di ')} (a partire dalla posizione 1). Quanti restano rivolti verso l’alto?`,
+      `${up}. Un bicchiere resta verso l'alto se viene capovolto un numero pari di volte.`);
+  }
+  function switches(d){
+    const n=d==='facile'?3:d==='medio'?4:d==='difficile'?5:6;
+    const presses=d==='facile'?4:d==='medio'?6:d==='difficile'?9:13;
+    const p=Array.from({length:presses},()=>rand(1,n));
+    const values=Array(n).fill(false);p.forEach(i=>values[i-1]=!values[i-1]);
+    const lit=values.map((on,i)=>on?i+1:null).filter(Boolean);
+    return base('Interruttori',d,`interruttori-${n}`,'Le luci accese',
+     `Ci sono ${n} lampadine spente, ognuna comandata dal proprio interruttore numerato. Premendo un interruttore cambi lo stato della sua lampadina. Premi, nell'ordine: ${p.join(', ')}. Quante lampadine sono accese alla fine?`,
+     `${lit.length}. Restano accese le lampadine n. ${lit.length?lit.join(', '):'nessuna'}: una lampadina si accende dopo un numero dispari di pressioni.`);
+  }
+  function words(d){
+    const words=['CASA','GATTO','LUNA','SOLE','MARE','LIBRO','STELLA','MENTE','CUORE','MONDO','FIORE','TEMPO','AMICO','PORTA','NOTTE','PONTE','NUVOLA','SEGRETO','LETTERA','PIRATA'];
+    const word=pick(words),shift=d==='facile'?1:d==='medio'?rand(2,3):d==='difficile'?rand(4,6):rand(7,12);
+    const code=[...word].map(x=>String.fromCharCode(65+(x.charCodeAt(0)-65+shift)%26)).join('');
+    return base('Parole',d,'cifrario-caesar','Decifra il messaggio',
+      `Ho sostituito ogni lettera con quella che si trova ${shift} posizioni DOPO nell'alfabeto A-Z (dopo Z si torna ad A). Il testo cifrato è «${code}». Qual è la parola originale?`,
+      `${word}. Per decifrare, sposta ogni lettera di ${shift} posizioni indietro.`);
+  }
+  return {detective:d=>testimony('detective',d),porte:d=>testimony('porte',d),fiammiferi:matches,bicchieri:cups,interruttori:switches,parole:words};
+})();
+  const methods={matematica:math,sequenze:sequence,logica:logic,attenzione:attention,codici:code,...extra};
   function generate(category,difficulty){
     const keys=Object.keys(methods);
     const key=category==='mix'?pick(keys):category;
