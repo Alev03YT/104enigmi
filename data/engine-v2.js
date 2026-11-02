@@ -29,7 +29,7 @@
   function sequence(d){
     const start=rand(1,15);
     if(d==='facile'){const delta=rand(2,12);const s=Array.from({length:5},(_,i)=>start+i*delta);return base('Sequenze',d,'aritmetica','Completa la sequenza',`${s.join(' · ')} · ?`,`${start+5*delta}. Si aggiunge ogni volta ${delta}.`);}
-    if(d==='medio'){const q=pick([2,3,4]);const s=Array.from({length:5},(_,i)=>q**i);return base('Sequenze',d,'geometrica','Qual è il prossimo?',`${s.join(' · ')} · ?`,`${q**5}. Ogni termine si moltiplica per ${q}.`);}
+    if(d==='medio'){const q=pick([2,3,4]),k=rand(1,18);const s=Array.from({length:5},(_,i)=>k*q**i);return base('Sequenze',d,'geometrica','Qual è il prossimo?',`${s.join(' · ')} · ?`,`${k*q**5}. Ogni termine si moltiplica per ${q}.`);}
     if(d==='difficile'){const k=rand(2,16),s=Array.from({length:5},(_,i)=>(i+1)**2+k);return base('Sequenze',d,'quadrati','Il numero mancante',`${s.join(' · ')} · ?`,`${36+k}. Sono i quadrati consecutivi 1², 2²... più ${k}.`);}
     const a=rand(2,10),b=rand(13,28),da=rand(3,9),db=rand(2,8);const s=Array.from({length:6},(_,i)=>i%2===0?a+Math.floor(i/2)*da:b+Math.floor(i/2)*db);
     return base('Sequenze',d,'alternata','Due sequenze nascoste',`${s.join(' · ')} · ?`,`${a+3*da}. Le posizioni dispari crescono di ${da}, le pari di ${db}.`);
