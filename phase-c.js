@@ -60,21 +60,27 @@
     flashButton('clearFavoritesBtn', 'Svuotati!', 'Svuota preferiti');
   }
 
-  function generateWeekPlan() {
+  async function generateWeekPlan() {
+    const button=$('weekPlanBtn');
+    button.disabled=true;
+    button.textContent='Genero calendario...';
     const days = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
     const slots = ['12:30', '18:30', '21:00'];
     const rows = [];
     const generateBtn = $('generateBtn');
 
-    days.forEach((day) => {
-      slots.forEach((time) => {
+    for(const day of days) {
+      for(const time of slots) {
         generateBtn?.click();
-        const item = getCurrentContent();
-        rows.push(`${day} ore ${time}\nTitolo: ${item.title}\nCategoria: ${item.category}\nQuiz: ${item.quiz}\nSoluzione: ${item.solution}\nDescrizione: ${item.description}\nPrompt copertina: ${item.coverPrompt}`);
-      });
-    });
+        const item=getCurrentContent();
+        if (item.title) rows.push(`${day} ore ${time}\nTitolo: ${item.title}\nCategoria: ${item.category}\nQuiz: ${item.quiz}\nSoluzione: ${item.solution}\nDescrizione: ${item.description}\nPrompt copertina: ${item.coverPrompt}`);
+        button.textContent=`Genero calendario... ${rows.length}/21`;
+        await new Promise(resolve=>setTimeout(resolve,0));
+      }
+    }
 
     $('calendarOutput').value = rows.join('\n\n-----------------------------\n\n');
+    button.disabled=false;
     flashButton('weekPlanBtn', 'Creato!', 'Piano 7 giorni');
   }
 
