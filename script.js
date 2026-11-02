@@ -2,23 +2,23 @@ const state = {
   generated: 0,
   currentQuiz: null,
   currentHook: '',
-  recent: JSON.parse(localStorage.getItem('recentQuizKeys') || '[]')
+  recent: (() => { try { const v=JSON.parse(localStorage.getItem('recentQuizKeys')||'[]'); return Array.isArray(v)?v:[]; } catch {return [];} })()
 };
 
 const hooks = [
   'NON RISPONDERE\nDI GETTO',
-  'IL 97%\nSBAGLIA QUESTO QUIZ',
-  'SOLO IL 3%\nRISPONDE GIUSTO',
+  'QUESTO QUIZ\nTI METTE ALLA PROVA',
+  'RIESCI A\nRISOLVERLO?',
   'QUIZ LOGICO\nVELOCE',
   'RIESCI A\nRISOLVERLO?',
-  'HAI SOLO\n10 SECONDI',
+  'RAGIONA PRIMA\nDI RISPONDERE',
   'TESTA LA TUA\nLOGICA'
 ];
 
 const categoryMap = {
   logica: 'Logica', matematica: 'Matematica', attenzione: 'Attenzione', interruttori: 'Interruttori',
   fiammiferi: 'Fiammiferi', porte: 'Osservazione', bicchieri: 'Bicchieri', detective: 'Detective',
-  sequenze: 'Sequenze', parole: 'Parole'
+  sequenze: 'Sequenze', parole: 'Parole', codici: 'Trova il codice'
 };
 
 const hashtags = {
@@ -109,21 +109,41 @@ function matchesFilters(quiz) {
 }
 function getBankCandidates() { return (window.QUIZ_BANK || []).filter(matchesFilters); }
 function generateProceduralCandidate() {
-  const selectedType = $('typeSelect').value;
-  const keys = Object.keys(proceduralGenerators);
-  const key = selectedType !== 'mix' && proceduralGenerators[selectedType] ? selectedType : pick(keys);
-  return proceduralGenerators[key]();
+  const type = $('typeSelect').value;
+  const difficulty = $('difficultySelect').value;
+  return window.QuizEngineV2?.generate(type, difficulty) || null;
 }
 function quizKey(quiz) { return `${quiz.category}|${quiz.title}|${quiz.text}`; }
 function uniqueQuiz() {
-  const combined = [...shuffle(getBankCandidates())];
-  for (let i = 0; i < 80; i++) combined.push(generateProceduralCandidate());
-  const fresh = combined.find(q => !state.recent.includes(quizKey(q)) && matchesFilters(q));
-  const quiz = fresh || combined.find(matchesFilters) || generateProceduralCandidate();
+  const seen = new Set(state.recent);
+  const type = $('typeSelect').value;
+  const supported = window.QuizEngineV2?.supported || [];
+  const procedural = type === 'mix' || supported.includes(type);
+  if (procedural) {
+    for (let attempt=0;attempt<32;attempt++) {
+      const q = generateProceduralCandidate();
+      if (q && matchesFilters(q) && !seen.has(quizKey(q))) {
+        remember(q);
+        return q;
+      }
+    }
+  }
+  // Le categorie non procedurali usano soltanto quiz dell'archivio
+  // che rispettano davvero categoria e difficoltà scelte.
+  const freshBank = shuffle(getBankCandidates())
+    .filter(q => q.text && q.solution && !seen.has(quizKey(q))
+      && !/\b(disegna|guarda (?:il|la) (?:disegno|figura))\b/i.test(q.text));
+  if (freshBank.length) {
+    const quiz=freshBank[0];
+    remember(quiz);
+    return quiz;
+  }
+  return null;
+}
+function remember(quiz) {
   state.recent.push(quizKey(quiz));
-  state.recent = state.recent.slice(-1000);
-  localStorage.setItem('recentQuizKeys', JSON.stringify(state.recent));
-  return quiz;
+  state.recent=state.recent.slice(-800);
+  try { localStorage.setItem('recentQuizKeys',JSON.stringify(state.recent)); } catch {}
 }
 function viralScore(quiz) {
   let score = 55;
@@ -161,12 +181,16 @@ function renderHook(hook) {
 function updateStats(score = 0) {
   const total = (window.QUIZ_BANK || []).length;
   $('statTotal').textContent = total;
-  $('statVariants').textContent = (total * 250 + 50000).toLocaleString('it-IT');
+  $('statVariants').textContent = window.QuizEngineV2 ? 'Attiva' : '—';
   $('statRecent').textContent = state.recent.length;
   $('statViral').textContent = score ? `${score}/100` : '-';
 }
 function generateQuiz() {
   const quiz = uniqueQuiz();
+  if (!quiz) {
+    $('counter').textContent = 'Nessun quiz nuovo e verificato disponibile per questa categoria e difficoltà. Cambia filtro o azzera l’anti-ripetizione.';
+    return;
+  }
   const hook = pick(hooks);
   const score = viralScore(quiz);
   state.currentQuiz = quiz;
@@ -194,13 +218,15 @@ function generateBatch() {
   const rows = [];
   const previousGenerated = state.generated;
   for (let i = 1; i <= 30; i++) {
-    const quiz = uniqueQuiz(), hook = pick(hooks), score = viralScore(quiz);
+    const quiz = uniqueQuiz();
+    if (!quiz) { rows.push('Archivio esaurito per questa combinazione: scegli un’altra categoria o difficoltà.'); break; }
+    const hook = pick(hooks), score = viralScore(quiz);
     rows.push(`${i}. [${quiz.category} | ${quiz.difficulty || 'mix'} | viralità ${score}/100]\nTITOLO: ${quiz.title}\nQUIZ: ${quiz.text}\nSOLUZIONE: ${quiz.solution}\nPIANO VIDEO: ${buildVideoPlan(quiz, score)}\nVOICE-OVER: ${buildVoiceover(quiz)}\nDESCRIZIONE: ${buildDescription(quiz)}\nCOMMENTO: ${buildPinnedComment(quiz)}\nPROMPT: ${buildImagePrompt(quiz, hook)}\n`);
   }
-  state.generated = previousGenerated + 30;
+  state.generated = previousGenerated + rows.filter(row => row.includes('TITOLO: ')).length;
   $('batchOutput').value = rows.join('\n-----------------------------\n');
   updateStats();
-  $('counter').textContent = `Generate 30 idee. Totale sessione: ${state.generated} | Anti-ripetizione: ultimi ${state.recent.length}`;
+  $('counter').textContent = `Idee generate. Totale sessione: ${state.generated} | Anti-ripetizione: ultimi ${state.recent.length}`;
 }
 async function copyText(text, buttonId, label) {
   try {
